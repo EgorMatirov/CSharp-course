@@ -33,5 +33,22 @@ namespace HotelBooking
                 throw new ArgumentException("Invalid room position");
             RoomPositions = RoomPositions.Add(roomPosition);
         }
+        protected bool Equals(Floor other)
+        {
+            return Guid == other.Guid;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Floor)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Guid.GetHashCode();
+        }
     }
 }
