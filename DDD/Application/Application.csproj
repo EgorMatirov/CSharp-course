@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E826E08B-3F4A-427E-ABAE-104A2CE7CBF9}</ProjectGuid>
+    <ProjectGuid>{4967FC86-D93D-49F9-90A0-0E667E3BE4B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HotelBooking</RootNamespace>
-    <AssemblyName>HotelBooking</AssemblyName>
+    <RootNamespace>Application</RootNamespace>
+    <AssemblyName>Application</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,7 +36,6 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,19 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Address.cs" />
-    <Compile Include="BookingOrder.cs" />
-    <Compile Include="Cost.cs" />
-    <Compile Include="Floor.cs" />
-    <Compile Include="GuestInfo.cs" />
-    <Compile Include="Hotel.cs" />
-    <Compile Include="Repositories\IBookingOrdersRepository.cs" />
-    <Compile Include="Repositories\IFloorRepository.cs" />
-    <Compile Include="Repositories\IHotelRepository.cs" />
-    <Compile Include="Repositories\IRoomRepository.cs" />
+    <Compile Include="Filters\CostFilter.cs" />
+    <Compile Include="Filters\DateFilter.cs" />
+    <Compile Include="Filters\HotelFilter.cs" />
+    <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="SearchService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Room.cs" />
-    <Compile Include="RoomAvailabilityService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HotelBooking\HotelBooking.csproj">
+      <Project>{E826E08B-3F4A-427E-ABAE-104A2CE7CBF9}</Project>
+      <Name>HotelBooking</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

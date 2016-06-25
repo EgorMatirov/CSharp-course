@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace HotelBooking
+namespace HotelBooking.Repositories
 {
     public interface IFloorRepository
     {
-        Room FindFloorByGuid(Guid guid);
+        Floor FindFloorByGuid(Guid guid);
         void SaveOrUpdate(Floor room);
     }
 }

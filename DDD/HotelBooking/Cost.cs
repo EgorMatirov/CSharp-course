@@ -18,6 +18,8 @@ namespace HotelBooking
             return new Cost(usdCost);
         }
 
+        #region Equals, <=, >= and hash code
+
         protected bool Equals(Cost other)
         {
             return Math.Abs(UsdCost - other.UsdCost) < 0.01;
@@ -28,12 +30,24 @@ namespace HotelBooking
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((Cost)obj);
+            return Equals((Cost) obj);
         }
 
         public override int GetHashCode()
         {
             return UsdCost.GetHashCode();
         }
+
+        public static bool operator <=(Cost a, Cost b)
+        {
+            return a.UsdCost <= b.UsdCost;
+        }
+
+        public static bool operator >=(Cost a, Cost b)
+        {
+            return b <= a;
+        }
+
+        #endregion
     }
 }

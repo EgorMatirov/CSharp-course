@@ -8,31 +8,40 @@ namespace HotelBooking
     public class Floor
     {
         public readonly Guid Guid;
-        public Image Plan { get; set; }
-        public ImmutableList<RoomPositionInfo> RoomPositions { get; private set; }
 
-        private Floor(Guid guid, Image plan, ImmutableList<RoomPositionInfo> roomPositions)
+        private Floor(Guid guid, Image plan, ImmutableList<Room> rooms)
         {
             Plan = plan;
-            RoomPositions = roomPositions;
+            Rooms = rooms;
             Guid = guid;
         }
 
-        public static Floor CreateFloor(Image plan, ImmutableList<RoomPositionInfo> roomPositions, Guid? guid = null)
+        public Image Plan { get; set; }
+        public ImmutableList<Room> Rooms { get; private set; }
+
+        public static Floor CreateFloor(Image plan, ImmutableList<Room> rooms, Guid? guid = null)
         {
-            if (roomPositions.Any(x => x.Position.Bottom > plan.Height || x.Position.Right > plan.Width))
+            if (rooms.Any(x => !IsValidPosition(x.Position, plan)))
                 throw new ArgumentException("Invalid room positions");
-            if( guid == null)
+            if (guid == null)
                 guid = Guid.NewGuid();
-            return new Floor(guid.Value, plan, roomPositions);
+            return new Floor(guid.Value, plan, rooms);
         }
 
-        public void AddRoomPosition(RoomPositionInfo roomPosition)
+        public void AddRoom(Room room)
         {
-            if (roomPosition.Position.Bottom > Plan.Height || roomPosition.Position.Right > Plan.Width)
+            if (!IsValidPosition(room.Position, Plan))
                 throw new ArgumentException("Invalid room position");
-            RoomPositions = RoomPositions.Add(roomPosition);
+            Rooms = Rooms.Add(room);
         }
+
+        private static bool IsValidPosition(Rectangle roomPosition, Image plan)
+        {
+            return roomPosition.Bottom <= plan.Height && roomPosition.Right <= plan.Width;
+        }
+
+        #region Equals and hash code
+
         protected bool Equals(Floor other)
         {
             return Guid == other.Guid;
@@ -43,12 +52,14 @@ namespace HotelBooking
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((Floor)obj);
+            return Equals((Floor) obj);
         }
 
         public override int GetHashCode()
         {
             return Guid.GetHashCode();
         }
+
+        #endregion
     }
 }

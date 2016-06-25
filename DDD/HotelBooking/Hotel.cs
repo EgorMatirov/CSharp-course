@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace HotelBooking
 {
     public class Hotel
     {
-        public readonly string Name;
-        public readonly Guid Guid;
         public readonly Address Address;
-        public ImmutableList<Guid> Floors { get; private set; }
+        public readonly Guid Guid;
+        public readonly string Name;
 
-        public Hotel(string name, Guid guid, Address address, ImmutableList<Guid> floors)
+        public Hotel(string name, Guid guid, Address address, ImmutableList<Floor> floors)
         {
             Name = name;
             Guid = guid;
@@ -18,16 +19,21 @@ namespace HotelBooking
             Floors = floors;
         }
 
-        public void AddFloor(Guid floorGuid)
+        public ImmutableList<Floor> Floors { get; private set; }
+        public IEnumerable<Room> Rooms => Floors.SelectMany(floor => floor.Rooms);
+
+        public void AddFloor(Floor floor)
         {
-            Floors = Floors.Add(floorGuid);
+            Floors = Floors.Add(floor);
         }
 
-        public static Hotel CreateHotel(string name, Address address, ImmutableList<Guid> roomGuids)
+        public static Hotel CreateHotel(string name, Address address, ImmutableList<Floor> floors)
         {
             var guid = Guid.NewGuid();
-            return new Hotel(name, guid, address, roomGuids);
+            return new Hotel(name, guid, address, floors);
         }
+
+        #region Equals and hash code
 
         protected bool Equals(Hotel other)
         {
@@ -39,12 +45,14 @@ namespace HotelBooking
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != GetType()) return false;
-            return Equals((Hotel)obj);
+            return Equals((Hotel) obj);
         }
 
         public override int GetHashCode()
         {
             return Guid.GetHashCode();
         }
+
+        #endregion
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
-namespace HotelBooking
+namespace HotelBooking.Repositories
 {
     public interface IHotelRepository
     {
         List<Hotel> GetHotels();
-        Match FindHotelByGuid(Guid guid);
+        Hotel FindHotelByGuid(Guid guid);
         void SaveOrUpdate(Hotel hotel);
     }
 }

@@ -1,53 +1,69 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 
 namespace HotelBooking
 {
     public class Room
     {
-        public readonly Guid Guid;
-        public BedType BedsType { get; set; }
-        public uint BedsCount { get; set; }
-        public bool HasTv { get; set; }
-        public bool HasBalcony { get; set; }
-        public Cost Cost { get; set; }
-        private readonly List<BookedDates> _bookedDates;
-
-        public Room(Guid guid, BedType bedsType, uint bedsCount, bool hasTv, bool hasBalcony, Cost cost, List<BookedDates> bookedDates)
-        {
-            Guid = guid;
-            BedsType = bedsType;
-            BedsCount = bedsCount;
-            HasTv = hasTv;
-            HasBalcony = hasBalcony;
-            Cost = cost;
-            _bookedDates = bookedDates;
-        }
-
-        public static Room CreateRoom(BedType bedsType, uint bedsCount, bool hasTv, bool hasBalcony, Cost cost)
-        {
-            var guid = Guid.NewGuid();
-            var bookedDates = new List<BookedDates>();
-
-            return new Room(guid, bedsType, bedsCount, hasTv, hasBalcony, cost, bookedDates);
-        }
-
-        public bool IsAvailableAt(DateTime dateTime)
-        {
-            return _bookedDates.Any(x => x.Contains(dateTime));
-        }
-
-        public bool IsAvailableAt(BookedDates dates)
-        {
-            return !_bookedDates.Any(x => x.CheckInDateTime > dates.CheckInDateTime && x.CheckOutDateTime < dates.CheckOutDateTime);
-        }
-        
         public enum BedType
         {
             Single,
             Double,
             King
         }
+        
+        public readonly Guid Guid;
+        public readonly Rectangle Position;
+
+        public Room(Guid guid, Guid hotelGuid, BedType bedsType, uint bedsCount, bool hasTv, bool hasBalcony, Cost cost, Rectangle position)
+        {
+            Guid = guid;
+            HotelGuid = hotelGuid;
+            BedsType = bedsType;
+            BedsCount = bedsCount;
+            HasTv = hasTv;
+            HasBalcony = hasBalcony;
+            Cost = cost;
+            Position = position;
+        }
+
+        public BedType BedsType { get; set; }
+        public uint BedsCount { get; set; }
+        public bool HasTv { get; set; }
+        public bool HasBalcony { get; set; }
+        public Cost Cost { get; set; }
+        public Guid HotelGuid { get; set; }
+
+        public static Room CreateRoom(Guid hotelGuid, BedType bedsType, uint bedsCount, bool hasTv, bool hasBalcony, Cost cost,
+            Rectangle position)
+        {
+            if (position.Left < 0 || position.Top < 0)
+                throw new ArgumentException("Wrong position: left and top should be greater than 0");
+            var guid = Guid.NewGuid();
+
+            return new Room(guid, hotelGuid, bedsType, bedsCount, hasTv, hasBalcony, cost, position);
+        }
+
+        #region Equals and hash code
+
+        protected bool Equals(Room other)
+        {
+            return Guid == other.Guid;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Room)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Guid.GetHashCode();
+        }
+
+        #endregion
     }
 }
